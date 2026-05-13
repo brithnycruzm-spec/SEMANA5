@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mobile/services/api_service.dart';
 
 class AddEstacionScreen extends StatefulWidget {
+  const AddEstacionScreen({super.key});
+
   @override
   _AddEstacionScreenState createState() => _AddEstacionScreenState();
 }
