@@ -3,27 +3,57 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
-  // AJUSTA ESTA URL a la de tu backend (ejemplo: http://localhost:3000)
-  final String baseUrl = "http://localhost:3000"; 
+  final String baseUrl = "http://192.168.1.33:8000";
 
   Future<bool> login(String email, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
-        await saveToken(data['token']); // Guarda el token recibido
-        return true;
-      }
-      return false;
-    } catch (e) {
-      return false;
-    }
+  if (email.trim().isEmpty || password.trim().isEmpty) {
+    return false;
   }
+
+  try {
+
+    final response = await http.post(
+      Uri.parse('$baseUrl/token'),
+
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: jsonEncode({
+        'email': email.trim(),
+        'password': password,
+      }),
+
+    ).timeout(const Duration(seconds: 10));
+
+    print("STATUS: ${response.statusCode}");
+    print("BODY: ${response.body}");
+
+    if (response.statusCode == 200) {
+
+      final data = jsonDecode(response.body);
+
+      final token = data['access_token'];
+
+      if (token == null || token.toString().isEmpty) {
+        return false;
+      }
+
+      await saveToken(token.toString());
+
+      return true;
+    }
+
+    return false;
+
+  } catch (e) {
+
+    print('Error de login: $e');
+
+    return false;
+  }
+}
 
   Future<void> saveToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
@@ -33,6 +63,11 @@ class AuthService {
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
+  }
+
+  Future<bool> isLoggedIn() async {
+    final token = await getToken();
+    return token != null && token.isNotEmpty;
   }
 
   Future<void> logout() async {
