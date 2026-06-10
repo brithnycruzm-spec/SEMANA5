@@ -27,7 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     setState(() => _isLoading = false);
-
+    if (!mounted) return;
+    
     if (success) {
 
       Navigator.pushReplacement(
@@ -48,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +90,14 @@ class _LoginScreenState extends State<LoginScreen> {
               : ElevatedButton(
                   onPressed: _handleLogin,
                   child: const Text('Iniciar Sesión'),
+                  
                 ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/register');
+                  },
+                  child: const Text("Crear cuenta"),
+                ),    
           ],
         ),
       ),

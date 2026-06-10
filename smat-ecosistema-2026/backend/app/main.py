@@ -41,7 +41,7 @@ def registrar_usuario(datos: schemas.UsuarioCreate, db: Session = Depends(databa
     db.commit()
     db.refresh(nuevo)
     return nuevo
- 
+
 # ↓ CAMBIADO: ahora usa OAuth2PasswordRequestForm para compatibilidad con Swagger Y Flutter
 @app.post("/token", response_model=schemas.TokenResponse, tags=["Seguridad"])
 def login(

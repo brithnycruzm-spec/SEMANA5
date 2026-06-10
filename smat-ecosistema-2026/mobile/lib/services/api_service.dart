@@ -4,7 +4,7 @@ import '../models/estacion.dart';
 import 'auth_service.dart';
 
 class ApiService {
-  final String baseUrl = "http://192.168.1.33:8000";
+  final String baseUrl = "http://127.0.0.1:8000/token";
 
   // ── Estaciones ──────────────────────────────────────────
 
